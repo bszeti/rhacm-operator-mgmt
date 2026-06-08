@@ -1,6 +1,6 @@
 
 operator:
-  name: openshift-pipelines-operator
+  name: openshift-pipelines-operator-rh
   namespace: openshift-pipelines-operator
   channel: latest
   source: redhat-operators
