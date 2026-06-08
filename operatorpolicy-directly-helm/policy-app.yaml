@@ -1,0 +1,71 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: operatorpolicy-directly-helm-app
+  namespace: open-cluster-policies
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: operatorpolicy-directly-helm-app
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: mustonlyhave
+              objectDefinition:
+                apiVersion: argoproj.io/v1alpha1
+                kind: Application
+                metadata:
+                  name: operatorpolicy-directly-helm
+                  namespace: openshift-gitops
+                spec:
+                  destination:
+                    namespace: openshift-gitops
+                    server: 'https://kubernetes.default.svc'
+                  project: default
+                  source:
+                    helm:
+                      parameters:
+                        - name: env
+                          value: '{{ fromClusterClaim "env" }}'
+                    path: operatorpolicy-directly-helm
+                    repoURL: 'https://github.com/bszeti/rhacm-operator-mgmt.git'
+                    targetRevision: main
+                  syncPolicy:
+                    automated:
+                      enabled: true
+                      selfHeal: true
+                      # prune: true
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: operatorpolicy-directly-helm-app
+  namespace: open-cluster-policies
+spec:
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+  clusterSets:
+    - qa
+    - uat
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: operatorpolicy-directly-helm-app
+  namespace: open-cluster-policies
+placementRef:
+  name: operatorpolicy-directly-helm-app
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: operatorpolicy-directly-helm-app
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy

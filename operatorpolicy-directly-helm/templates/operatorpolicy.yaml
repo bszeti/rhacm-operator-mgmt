@@ -1,0 +1,20 @@
+{{- $currentEnv := include "findByNameInList" (dict "list" .Values.environments "name" .Values.env) | fromJson -}}
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: openshift-pipelines-operator
+  namespace: open-cluster-management-policies
+spec:
+  remediationAction: enforce
+  complianceType: {{ if $currentEnv.disabled }}mustnothave{{ else }}musthave{{ end }}
+  severity: critical
+  subscription:
+    name: {{ .Values.operator.name }}
+    namespace: {{ .Values.operator.namespace }}
+    source: {{ .Values.operator.source }}
+    sourceNamespace: {{ .Values.operator.sourceNamespace }}
+    channel: {{ .Values.operator.channel }}
+    startingCSV: {{ $currentEnv.targetVersion }}
+  versions:
+    {{- include "versionsUpTo" (dict "versions" .Values.operator.versions "targetVersion" $currentEnv.targetVersion) | nindent 4 }}
+  upgradeApproval: Automatic
