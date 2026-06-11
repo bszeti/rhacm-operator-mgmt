@@ -1,0 +1,15 @@
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: openshift-pipelines-operator
+  namespace: open-cluster-policies
+spec:
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+  clusterSets:
+  {{- range .Values.environments }}
+    - {{ .name }}
+  {{- end }}

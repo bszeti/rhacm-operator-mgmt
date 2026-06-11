@@ -1,0 +1,50 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: openshift-pipelines-operator
+  namespace: open-cluster-policies
+  annotations:
+    policy.open-cluster-management.io/categories: "OpenShift Pipelines Operator"
+    policy.open-cluster-management.io/controls: OpenShift Standard
+spec:
+  policy-templates:
+    # - objectDefinition:
+    #     apiVersion: policy.open-cluster-management.io/v1
+    #     kind: ConfigurationPolicy
+    #     metadata:
+    #       name: openshift-pipelines-operator-ns
+    #     spec:
+    #       remediationAction: enforce
+    #       severity: high
+    #       object-templates:
+    #         - complianceType: musthave
+    #           objectDefinition:
+    #             apiVersion: v1
+    #             kind: Namespace
+    #             metadata:
+    #               name: openshift-pipelines-operator
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: openshift-pipelines-operator
+        spec:
+          remediationAction: enforce
+          complianceType: '{{ "{{hub" }} if (fromConfigMap "" (printf "openshift-pipelines-operator-%s" .ManagedClusterLabels.env) "disabled" | toBool) {{ "hub}}mustnothave{{hub else hub}}musthave{{hub end hub}}" }}'
+          severity: critical
+          subscription:
+            name: {{ .Values.operator.name }}
+            namespace: {{ .Values.operator.namespace }}
+            source: {{ .Values.operator.source }}
+            sourceNamespace: {{ .Values.operator.sourceNamespace }}
+            channel: {{ .Values.operator.channel }}
+            startingCSV: '{{ "{{hub" }} fromConfigMap "" (printf "openshift-pipelines-operator-%s" .ManagedClusterLabels.env) "targetVersion" {{ "hub}}" }}'
+          upgradeApproval: Automatic
+          versions:
+          {{- $exprs := include "versionsPerEnvironment" (dict "environments" .Values.environments "versions" .Values.operator.versions) | fromJsonArray -}}
+          {{- range $exprs }}
+            - {{ . }}
+          {{- end }}
+          
+            
+            
