@@ -7,7 +7,9 @@ operator:
   sourceNamespace: openshift-marketplace
   
   # List all available operator versions
-  # oc get packagemanifest openshift-pipelines-operator-rh -o json | jq -r '.status.channels[] | .name as $channel | .entries[] | [$channel, .name, .version] | @tsv'
+  # oc get packagemanifest openshift-pipelines-operator-rh -o json | jq -r  '.status.channels[] | select(.name == "latest") | .entries | reverse | .[].name'
+  # oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::-1]} {.name}{"\n"}{end}'
+  
   versions:
     - openshift-pipelines-operator-rh.v1.14.0
     - openshift-pipelines-operator-rh.v1.14.1
@@ -51,8 +53,11 @@ operator:
 # helm template test ./operatorpolicy-directly-helm --set env=qa
 environments:
   - name: qa
-    targetVersion: openshift-pipelines-operator-rh.v1.15.4
+    targetVersion: openshift-pipelines-operator-rh.v1.16.4
     disabled: false
   - name: uat
+    targetVersion: openshift-pipelines-operator-rh.v1.15.4
+    disabled: true
+  - name: prod
     targetVersion: openshift-pipelines-operator-rh.v1.14.0
     disabled: true
