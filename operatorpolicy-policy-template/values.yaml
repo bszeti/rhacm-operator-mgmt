@@ -8,7 +8,7 @@ operator:
   
   # List all available operator versions
   # oc get packagemanifest openshift-pipelines-operator-rh -o json | jq -r  '.status.channels[] | select(.name == "latest") | .entries | reverse | .[].name'
-  # oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::-1]} {.name}{"\n"}{end}'
+  # oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::]} {.name}{"\n"}{end}' | tac
   
   versions:
     - openshift-pipelines-operator-rh.v1.14.0
