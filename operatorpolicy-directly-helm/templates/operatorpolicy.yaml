@@ -18,3 +18,5 @@ spec:
   versions:
     {{- include "versionsUpTo" (dict "versions" .Values.operator.versions "targetVersion" $currentEnv.targetVersion) | nindent 4 }}
   upgradeApproval: Automatic
+  removalBehavior:
+    customResourceDefinitions: Delete
