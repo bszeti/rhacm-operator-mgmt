@@ -52,7 +52,7 @@ operator:
 environments:
   - name: qa
     targetVersion: openshift-pipelines-operator-rh.v1.15.4
-    disabled: false
+    disabled: true
   - name: uat
     targetVersion: openshift-pipelines-operator-rh.v1.14.0
     disabled: true
