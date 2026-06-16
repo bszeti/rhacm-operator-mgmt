@@ -6,7 +6,7 @@ metadata:
   namespace: open-cluster-management-policies
 spec:
   remediationAction: enforce
-  complianceType: {{ if $currentEnv.disabled }}mustnothave{{ else }}musthave{{ end }}
+  complianceType: {{ if $currentEnv.disabled | default false }}mustnothave{{ else }}musthave{{ end }}
   severity: critical
   subscription:
     name: {{ .Values.operator.name }}
