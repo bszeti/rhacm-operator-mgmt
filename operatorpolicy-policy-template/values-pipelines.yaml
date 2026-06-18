@@ -60,6 +60,8 @@ operator:
 environments:
   - name: qa
     targetVersion: openshift-pipelines-operator-rh.v1.15.0
+    # Upgrade upto a specific version:
+    # targetVersion: openshift-pipelines-operator-rh.v1.21.2
   - name: uat
     targetVersion: openshift-pipelines-operator-rh.v1.15.0
     disabled: true
