@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: openshift-pipelines-operator-{{ .name }}
+  name: {{ $.Values.operator.namespace }}-{{ .name }}
   namespace: open-cluster-policies
 data:
   targetVersion: '{{ .targetVersion }}'

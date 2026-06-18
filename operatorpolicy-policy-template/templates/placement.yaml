@@ -1,7 +1,7 @@
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: openshift-pipelines-operator
+  name: {{ .Values.operator.namespace }}
   namespace: open-cluster-policies
 spec:
   tolerations:

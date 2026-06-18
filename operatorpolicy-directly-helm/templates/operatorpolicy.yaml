@@ -2,7 +2,7 @@
 apiVersion: policy.open-cluster-management.io/v1beta1
 kind: OperatorPolicy
 metadata:
-  name: openshift-pipelines-operator
+  name: {{ .Values.operator.name }}
   namespace: open-cluster-management-policies
 spec:
   remediationAction: enforce
@@ -15,9 +15,14 @@ spec:
     sourceNamespace: {{ .Values.operator.sourceNamespace }}
     channel: {{ .Values.operator.channel }}
     startingCSV: {{ $currentEnv.targetVersion }}
+  # Usually operators monitor all namespaces, but some can be limited to a specific namespace. Note, changes afterwards are not supported.
+  # operatorGroup:
+  #   name: self
+  #   targetNamespaces:
+  #     - {{ .Values.operator.namespace }}
   versions:
     {{- include "versionsUpTo" (dict "versions" .Values.operator.versions "targetVersion" $currentEnv.targetVersion) | nindent 4 }}
   upgradeApproval: Automatic
   removalBehavior:
-    # Keep (default) or Delete
+    # Keep (default) or Delete (make sure that all CR instances are deleted separately first)
     customResourceDefinitions: Keep

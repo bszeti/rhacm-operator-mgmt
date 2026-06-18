@@ -1,13 +1,13 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: openshift-pipelines-operator
+  name: {{ .Values.operator.namespace }}
   namespace: open-cluster-policies
 placementRef:
-  name: openshift-pipelines-operator
+  name: {{ .Values.operator.namespace }}
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: openshift-pipelines-operator
+  - name: {{ .Values.operator.namespace }}
     apiGroup: policy.open-cluster-management.io
     kind: Policy

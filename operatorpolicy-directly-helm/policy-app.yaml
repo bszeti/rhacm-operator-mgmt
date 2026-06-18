@@ -23,6 +23,9 @@ spec:
                 metadata:
                   name: operatorpolicy-directly-helm
                   namespace: openshift-gitops
+                  finalizers:
+                    # Cascade delete resources
+                    - resources-finalizer.argocd.argoproj.io
                 spec:
                   destination:
                     namespace: openshift-gitops
@@ -40,7 +43,7 @@ spec:
                     automated:
                       enabled: true
                       selfHeal: true
-                      prune: true
+                      # prune: true
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement

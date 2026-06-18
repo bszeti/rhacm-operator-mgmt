@@ -1,0 +1,51 @@
+# AMQ Broker Operator
+operator:
+  name: amq-broker-rhel9
+  namespace: amq-broker-operator
+  channel: 7.13.x
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  
+# List all available operator versions
+# oc get packagemanifest amq-broker-rhel9 -o json | jq -r  '.status.channels[] | select(.name == "7.13.x") | .entries | reverse | .[].name'
+# oc get packagemanifest amq-broker-rhel9 -o jsonpath='{range .status.channels[?(@.name == "7.13.x")].entries[::]}- {.name}{"\n"}{end}' | tac
+  versions:
+    - amq-broker-operator.v7.13.0-opr-1-0.1747315188.p
+    - amq-broker-operator.v7.13.0-opr-1-0.1747658456.p
+    - amq-broker-operator.v7.13.0-opr-1
+    - amq-broker-operator.v7.13.1-opr-1
+    - amq-broker-operator.v7.13.1-opr-1-0.1754564924.p
+    - amq-broker-operator.v7.13.1-opr-1-0.1756374447.p
+    - amq-broker-operator.v7.13.1-opr-1-0.1756381365.p
+    - amq-broker-operator.v7.13.1-opr-1-0.1758024989.p
+    - amq-broker-operator.v7.13.1-opr-1-0.1758027574.p
+    - amq-broker-operator.v7.13.2-opr-1
+    - amq-broker-operator.v7.13.2-opr-1-0.1761129569.p
+    - amq-broker-operator.v7.13.2-opr-1-0.1761126307.p
+    - amq-broker-operator.v7.13.3-opr-1-0.1767803604.p
+    - amq-broker-operator.v7.13.3-opr-1-0.1766396094.p
+    - amq-broker-operator.v7.13.3-opr-1-0.1767807057.p
+    - amq-broker-operator.v7.13.3-opr-1-0.1766088986.p
+    - amq-broker-operator.v7.13.3-opr-1
+    - amq-broker-operator.v7.13.3-opr-1-0.1767804975.p
+    - amq-broker-operator.v7.13.3-opr-1-0.1766088994.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1773241632.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1773243388.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1773623530.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1774232950.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1774978247.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1775649637.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1775651671.p
+    - amq-broker-operator.v7.13.4-opr-1-0.1776062112.p
+    - amq-broker-operator.v7.13.4-opr-1
+    - amq-broker-operator.v7.13.5-opr-1
+
+# Set the environment during deployment with "--set env=qa"
+# helm template test ./operatorpolicy-directly-helm --set env=qa -f ./operatorpolicy-directly-helm/values-amq.yaml
+environments:
+  - name: qa
+    targetVersion: amq-broker-operator.v7.13.0-opr-1
+    # disabled: true
+  - name: uat
+    targetVersion: amq-broker-operator.v7.13.0-opr-1
+    disabled: true
