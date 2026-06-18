@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.operator.namespace }}
   namespace: open-cluster-policies
 spec:
+  disabled: false
   policy-templates:
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
