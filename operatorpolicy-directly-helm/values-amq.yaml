@@ -40,6 +40,14 @@ operator:
     - amq-broker-operator.v7.13.4-opr-1
     - amq-broker-operator.v7.13.5-opr-1
 
+# Actual allowed versions to upgrade to are the latest within z-streams:
+# - amq-broker-operator.v7.13.0-opr-1-0.1747658456.p
+# - amq-broker-operator.v7.13.1-opr-1-0.1758027574.p
+# - amq-broker-operator.v7.13.2-opr-1-0.1761129569.p
+# - amq-broker-operator.v7.13.3-opr-1-0.1767807057.p
+# - amq-broker-operator.v7.13.4-opr-1-0.1776062112.p
+# - amq-broker-operator.v7.13.5-opr-1
+
 # Set the environment during deployment with "--set env=qa"
 # helm template test ./operatorpolicy-directly-helm --set env=qa -f ./operatorpolicy-directly-helm/values-amq.yaml
 environments:

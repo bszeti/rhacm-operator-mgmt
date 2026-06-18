@@ -1,6 +1,6 @@
 # OpenShift Pipeline Operator
 # Note: The OpenShift Pipeline Operator also creates some CRs autoamtically after installation. 
-#       The OperatorPolicy with "mustnothave" doesn't remove these instances, so setting "disabled: true" can't be used for a proper uninstallation.
+#       The OperatorPolicy with "mustnothave" doesn't remove these instances, so setting "disabled: true" can't be used for a proper uninstallation. Should use the UI instead.
 operator:
   name: openshift-pipelines-operator-rh
   namespace: openshift-pipelines-operator
@@ -10,7 +10,7 @@ operator:
   
 # List all available operator versions
 # oc get packagemanifest openshift-pipelines-operator-rh -o json | jq -r  '.status.channels[] | select(.name == "latest") | .entries | reverse | .[].name'
-# oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::]}- {.name}{"\n"}{end}' | tac
+# oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::]} {.name}{"\n"}{end}' | tac
   versions:
     - openshift-pipelines-operator-rh.v1.15.0
     - openshift-pipelines-operator-rh.v1.15.1
@@ -56,10 +56,13 @@ operator:
 # - openshift-pipelines-operator-rh.v1.22.3
 
 # Set the environment during deployment with "--set env=qa"
-# helm template test ./operatorpolicy-directly-helm --set env=qa
+# helm template test ./operatorpolicy-policy-template -f operatorpolicy-policy-template/values-pipelines.yaml
 environments:
   - name: qa
     targetVersion: openshift-pipelines-operator-rh.v1.15.0
   - name: uat
     targetVersion: openshift-pipelines-operator-rh.v1.15.0
     disabled: true
+
+# Get all instances automatically created:
+# for crd in $(oc get crd -ojsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep tekton.dev); do echo ======== $crd; oc get $crd -A; done

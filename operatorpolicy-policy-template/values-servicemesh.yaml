@@ -1,4 +1,5 @@
 # Service Mesh Operator
+# Note: Upgrade is only possible to latest version within the channel.
 operator:
   name: servicemeshoperator3
   # Use a separate namespace for every operator to avoid conflicts with other operators.
@@ -48,12 +49,12 @@ operator:
     - servicemeshoperator3.v3.3.4
 
 # Set the environment during deployment with "--set env=qa"
-# helm template test ./operatorpolicy-policy-template
+# helm template test ./operatorpolicy-policy-template -f operatorpolicy-policy-template/values-servicemesh.yaml
 environments:
   - name: qa
     targetVersion: servicemeshoperator3.v3.0.0
     # Upgrade upto a specific version:
-    # targetVersion: servicemeshoperator3.v3.3.2
+    # targetVersion: servicemeshoperator3.v3.3.4
     disabled: false
   - name: uat
     targetVersion: servicemeshoperator3.v3.0.0

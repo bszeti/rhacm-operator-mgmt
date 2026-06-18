@@ -46,6 +46,9 @@ operator:
     - servicemeshoperator3.v3.3.3
     - servicemeshoperator3.v3.3.4
 
+# The only allowed versions to upgrade to is the latest:
+# - servicemeshoperator3.v3.3.4
+
 # Set the environment during deployment with "--set env=qa"
 # helm template test ./operatorpolicy-directly-helm --set env=qa
 environments:
