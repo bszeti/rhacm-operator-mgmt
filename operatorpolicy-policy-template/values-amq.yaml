@@ -48,13 +48,11 @@ operator:
 # - amq-broker-operator.v7.13.4-opr-1-0.1776062112.p
 # - amq-broker-operator.v7.13.5-opr-1
 
-# Set the environment during deployment with "--set env=qa"
-# helm template amq-broker-operator ./operatorpolicy-directly-helm --set env=qa -f ./operatorpolicy-directly-helm/values-amq.yaml
+# helm template test ./operatorpolicy-policy-template -f ./operatorpolicy-policy-template/values-amq.yaml
 environments:
   - name: qa
-    targetVersion: amq-broker-operator.v7.13.4-opr-1-0.1776062112.p
+    targetVersion: amq-broker-operator.v7.13.2-opr-1-0.1761129569.p
     # disabled: true
   - name: uat
-    targetVersion: amq-broker-operator.v7.13.2-opr-1-0.1761129569.p
-  - name: prod
     targetVersion: amq-broker-operator.v7.13.0-opr-1
+    disabled: true

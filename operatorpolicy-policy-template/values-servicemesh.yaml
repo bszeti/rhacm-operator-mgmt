@@ -48,7 +48,6 @@ operator:
     - servicemeshoperator3.v3.3.3
     - servicemeshoperator3.v3.3.4
 
-# Set the environment during deployment with "--set env=qa"
 # helm template test ./operatorpolicy-policy-template -f operatorpolicy-policy-template/values-servicemesh.yaml
 environments:
   - name: qa

@@ -1,6 +1,6 @@
-# OpenShift Pipeline Operator
-# Note: The OpenShift Pipeline Operator also creates some CRs autoamtically after installation. 
-#       The OperatorPolicy with "mustnothave" doesn't remove these instances, so setting "disabled: true" can't be used for a proper uninstallation.
+# OpenShift Pipelines Operator
+# Note: The OpenShift Pipelines Operator also creates some CRs automatically after installation. 
+#       The OperatorPolicy with "mustnothave" doesn't remove these instances, so setting "disabled: true" can't be used for a proper uninstallation. Should use the UI instead.
 operator:
   name: openshift-pipelines-operator-rh
   namespace: openshift-pipelines-operator
@@ -56,7 +56,7 @@ operator:
 # - openshift-pipelines-operator-rh.v1.22.3
 
 # Set the environment during deployment with "--set env=qa"
-# helm template test ./operatorpolicy-directly-helm --set env=qa
+# helm template openshift-pipelines-operator ./operatorpolicy-directly-helm --set env=qa -f ./operatorpolicy-directly-helm/values-pipelines.yaml
 environments:
   - name: qa
     targetVersion: openshift-pipelines-operator-rh.v1.15.0

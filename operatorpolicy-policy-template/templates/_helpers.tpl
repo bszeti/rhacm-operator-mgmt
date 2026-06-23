@@ -1,5 +1,5 @@
 {{/*
-Return list items of versions up to targetVersion.
+Return a sublist of versions from the first up to the expected targetVersion.
 Expects a dict: { "versions": [...], "targetVersion": "..." }
 */}}
 {{- define "versionsUpTo" -}}
@@ -17,10 +17,15 @@ Expects a dict: { "versions": [...], "targetVersion": "..." }
     {{- slice $versions 0 (add $endIndex 1) | mustToJson -}}
 {{- end -}}
 
+{{/*
+Generates the RHACM template expressions around each versions based on the "env" cluster label where they are needed.
+Expects a dict: { "environments": [...], "versions": "[...]" }
+*/}}
 {{- define "versionsPerEnvironment" -}}
     {{- $environments := required "environments is required" .environments -}}
     {{- $versions := required "versions is required" .versions -}}
 
+    {{/* Go through environments and extend with the list of allowed versions  */}}
     {{- $environmentsWithVersions := list -}}
     {{- range $environments -}}
         {{- $allowedVersionsForEnv := include "versionsUpTo" (dict "versions" $versions "targetVersion" .targetVersion) | fromJsonArray -}}
@@ -28,6 +33,7 @@ Expects a dict: { "versions": [...], "targetVersion": "..." }
         {{- $environmentsWithVersions = append $environmentsWithVersions $extended -}}
     {{- end -}}
 
+    {{/* Go through version list and add template expressions based on which environment allows them */}}
     {{- $versionsWithTemplateExpression := list -}}
     {{- range $v := $versions -}}
         
