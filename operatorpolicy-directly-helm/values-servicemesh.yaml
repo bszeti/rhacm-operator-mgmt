@@ -57,4 +57,5 @@ environments:
     # disabled: true
   - name: uat
     targetVersion: servicemeshoperator3.v3.0.0
-    disabled: true
+  - name: prod
+    targetVersion: servicemeshoperator3.v3.0.0

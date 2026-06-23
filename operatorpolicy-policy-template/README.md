@@ -1,8 +1,8 @@
-# Create Policy on a Hub cluster
+# Create Policy on the Hub cluster
 
 The most common - and recommended - approach with RHACM is to create a _Policy_ object on the Hub cluster, which includes `OperatorPolicy` and `ConfigurationPolicy` items enforced on the managed clusters based on _Placement_ rules. These policies show up on the _Policy table_ on the UI under _Governance_ as expected. This Helm chart follows this pattern and it should be deployed only on the Hub cluster, which takes care of creating the required resources on the managed clusters afterwards. 
 
-For example first we can deploy the _OpenShift Pipelines Operator_ in the "qa", "uat" and "prod" environments - that are expected to have a matching `env` label: 
+For example first we can deploy the _OpenShift Pipelines Operator_ `v1.15` in the `qa`, `uat` and `prod` environments - that are expected to have a matching `env` label:
 
 ```yaml
 # In values-pipelines.yaml...
@@ -16,12 +16,12 @@ environments:
 ```
 
 Deploy Helm chart:
-```
+```sh
 # Login to the Hub cluster and run:
 helm upgrade -i openshift-pipelines-operator ./operatorpolicy-policy-template -f ./operatorpolicy-policy-template/values-pipelines.yaml
 ```
 
-To upgrade operator versions in QA and UAT, change their `targetVersion` and run the `helm` command again:
+To upgrade operator versions in `qa` and `uat`, change their `targetVersion` and run the `helm` command again:
 ```yaml
 # In values-pipelines.yaml...
 environments:
@@ -33,7 +33,7 @@ environments:
     targetVersion: openshift-pipelines-operator-rh.v1.15.4
 ```
 
-This will generate a `Policy` with an `OperatorPolicy` - and a `ConfigurationPolicy` for its namespace - but each version is surrounded by a template expression to limit which environments can have the given version. These expressions are evaluated on the managed cluster based on the `env` label they have and RHACM will approve _InstallPlans_ only for versions allowed for that cluster:
+This will generate a `Policy` with an `OperatorPolicy` - and a `ConfigurationPolicy` for its namespace - but each version is surrounded by a template expression to limit which environments can have the given version. These expressions are evaluated on the managed clusters based on the `env` label they have and RHACM will approve _InstallPlans_ only for versions allowed for that cluster:
 ```yaml
 # Source: operatorpolicy-policy-template/templates/policy.yaml
 apiVersion: policy.open-cluster-management.io/v1
@@ -90,7 +90,7 @@ Additional notes:
 - The policy also uses hub cluster templates with `fromConfigMap` so we can keep environment specific parameters in _ConfigMaps_. This is a common pattern which makes the _Policy_ more readable in case of many clusters.
 - Adding `disabled: true` to an environment sets `complianceType: mustnothave` which uninstalls the operator. If you're not planning to reinstall the operator later, make sure to remove any related custom CRs first to avoid stuck deletions later due to missing finalizers.
 - The namespace for the operator is created by the `ConfigurationPolicy`. Make sure to use a separate dedicated namespace for every operator, otherwise the _InstallPlans_ can overlap.
-- Changing the `channel` requires a full uninstall/reinstall
-- The `startingCSV` field only matters for the first installation, but not during upgrades
+- Changing the `channel` requires a full uninstall/reinstall.
+- The `startingCSV` field only matters for the first installation, but not during upgrades.
 - Getting operator versions possibly could be automated somehow, but it really depends on the tools we have available.
-- The actual versions we can upgrade to depends on the _InstallPlans_ created by OLM - RHACM only approves them - which is operator specific. Usually only the last z-stream version can be used within a minor version, but for simplicity we can list all versions in the catalog.
+- The actual versions we can upgrade to depends on the _InstallPlans_ created by OLM - RHACM only approves them - which is operator specific. Usually only the last z-stream version can be used within a minor version, but for simplicity we can list all versions from the catalog.

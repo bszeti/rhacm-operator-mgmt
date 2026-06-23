@@ -1,8 +1,8 @@
 # Create OperatorPolicy directly on managed clusters
 
-This Helm chart can be used to create `OperatorPolicy` resources directly on the managed clusters which is already connected to RHACM. The chart requires the `env` value to be set additionally to the values file, so we don't have to maintain a separate file for each environment, we can simply change the `targetVersion`.
+This Helm chart can be used to create `OperatorPolicy` resources directly on the managed clusters which is already connected to RHACM. The chart requires the `env` value to be set additionally to the values file, so we don't have to maintain a separate file for each environment, we can simply keep all `targetVersion` in one file.
 
-For example first we can deploy the _OpenShift Pipelines Operator_ in the "qu" and "uat" environments like this: 
+For example first we can deploy the _OpenShift Pipelines Operator_ in the `qu` and `uat` environments like this:
 
 Set desired version in the values file:
 
@@ -15,13 +15,13 @@ environments:
     targetVersion: openshift-pipelines-operator-rh.v1.15.0
 ```
 
-Deploy Helm chart:
-```
+Deploy Helm chart with `--set env=...`:
+```sh
 # Login to QA environment and run:
-helm upgrade -i openshift-pipelines-operator ./operatorpolicy-directly-helm -f ./operatorpolicy-directly-helm/values-pipelines.yaml --set env=qa
+helm upgrade -i openshift-pipelines-operator ./operatorpolicy-directly-helm --set env=qa -f ./operatorpolicy-directly-helm/values-pipelines.yaml
 
 # Login to UAT environment and run:
-helm upgrade -i openshift-pipelines-operator ./operatorpolicy-directly-helm -f ./operatorpolicy-directly-helm/values-pipelines.yaml --set env=uat
+helm upgrade -i openshift-pipelines-operator ./operatorpolicy-directly-helm --set env=uat -f ./operatorpolicy-directly-helm/values-pipelines.yaml
 ```
 
 To upgrade operator version in QA, change its `targetVersion` and run the related `helm` command again:
@@ -34,7 +34,7 @@ environments:
 ```
 
 This will deploy an `OperatorPolicy` with a version list up to the target, so RHACM will approve any _InstallPlans_ up to that version.
-```
+```yaml
 apiVersion: policy.open-cluster-management.io/v1beta1
 kind: OperatorPolicy
 metadata:
@@ -70,7 +70,7 @@ spec:
   upgradeApproval: Automatic
 ```
 
-The Helm chart requires the list of available operator versions in the desired channel, which can be queried by a command like this:
+The Helm chart requires the - ordered - list of available operator versions in the desired channel, which can be queried by a command like this:
 
     oc get packagemanifest openshift-pipelines-operator-rh -o jsonpath='{range .status.channels[?(@.name == "latest")].entries[::]}- {.name}{"\n"}{end}' | tac
 
@@ -81,8 +81,8 @@ Additional notes:
 
 - Adding `disabled: true` to an environment sets `complianceType: mustnothave` which uninstalls the operator. If you're not planning to reinstall the operator later, make sure to remove any related custom CRs first to avoid stuck deletions later due to missing finalizers.
 - The namespace for the operator is NOT created automatically by the `OperatorPolicy`. Make sure to use a separate dedicated namespace for every operator, otherwise the _InstallPlans_ can overlap.
-- Changing the `channel` requires a full uninstall/reinstall
-- The `startingCSV` field only matters for the first installation, but not during upgrades
+- Changing the `channel` requires a full uninstall/reinstall.
+- The `startingCSV` field only matters for the first installation, but not during upgrades.
 - Getting operator versions possibly could be automated somehow, but it really depends on the tools we have available.
 - The actual versions we can upgrade to depends on the _InstallPlans_ created by OLM - RHACM only approves them - which is operator specific. Usually the last z-stream version can be used within a minor version.
 
